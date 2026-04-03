@@ -1,0 +1,69 @@
+################################################################################
+#
+# RevBayes Example: Total-evidence dating under the fossilized birth-death model
+# 
+# This file: Runs the full MCMC ...
+#
+# authors: Tracy A. Heath, Walker C. Pett, April M. Wright
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+# Create the full list of taxa (including all fossils and extant species #
+taxa <- readTaxonData("../sim/fossils.tsv")
+
+# Import the molecular sequences #
+# this file contains only the taxa for which sequence data are available #
+data <- readDiscreteCharacterData("../sim/simulated_data.nex")
+
+# Import the morphological character matrix #
+# this file contains only the taxa for which morphological characters are available #
+
+# Add the missing taxa to each data partition #
+data.addMissingTaxa( taxa )
+
+## helpers
+n_taxa <- taxa.size()
+
+moves = VectorMoves()
+
+# Load the model files
+
+source("scripts/model_FBDP.Rev") # FBD tree prior
+
+source("scripts/model_UExp.Rev") # UExp relaxed clock
+
+source("scripts/model_GTRG_I_G.Rev") # Molecular substitution model (GTR+G)
+
+# source("scripts/model_Morph.Rev") # Morphological character change model
+
+
+########
+# MCMC #
+########
+
+# initialize the model object #
+mymodel = model(sf)
+
+monitors = VectorMonitors()
+
+# Create a vector of monitors #
+# 1. for the full model #
+monitors.append( mnModel(filename="output/sim.log", printgen=100) )
+
+# 2. the tree #
+monitors.append( mnFile(filename="output/sim.trees", printgen=100, pruned_tree) )
+
+# 3. and a few select parameters to be printed to the screen #
+monitors.append( mnScreen(printgen=100, age_extant_mrca, num_samp_anc, origin_time) )
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves)
+
+# Run the MCMC #
+mymcmc.run(generations=100000)
+
+# Quit RevBayes #
+q()

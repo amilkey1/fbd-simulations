@@ -1,0 +1,102 @@
+# set random number seed
+seed(1)
+
+nreps = 10
+for (a in 1:nreps) {
+	# clear vectors
+	if (a > 1) {
+		clear(taxa)
+	}
+	
+	lambda ~ dnExponential(1)
+	mu ~ dnExponential(10)
+	psi ~ dnUniform(0.001, 1.0)
+	rho ~ dnUniform(0.001, 1.0)
+	origin_time ~ dnUniform(10,50)
+	
+	lambda.redraw()
+	mu.redraw()
+	
+	# create taxon names
+	n_extant <- floor(runif(1, 5, 21)[1])
+	n_fossils <- floor(runif(1, 1, 11)[1])
+	
+	for (i in 1:n_extant) {
+		taxa[i] = taxon("Taxon_" + i)
+	}
+	
+	count = 1
+	for (i in (n_extant + 1):(n_extant + n_fossils)) {
+		# Set age to a range
+		fossil_age ~ dnUnif(0.001, origin_time)
+		taxa[i] = taxon("Fossil_" + (i - n_extant), age=fossil_age)
+		fossil_names[count] = taxa[i]
+		count <- count + 1
+	}
+	
+	fbd_tree ~ dnFBDP(lambda=lambda, mu=mu, psi=psi, rho=rho, originAge=origin_time, taxa=taxa)
+	fbd_tree.redraw()
+	
+	filename = "output" + a + "/sim/sim_fbd.tre"
+	writeNexus(filename=filename, fbd_tree)
+	
+	# prune fossil taxa
+	extant_only_tree := fnPruneTree(fbd_tree, prune=fossil_names)
+	
+	# simulate sequence data for extant taxa
+	#####################################
+	# GTR+I+G nucleotide substitution model #
+	#####################################
+	
+	# Initialize the parameters of substitution matrix #
+	# Both the stationary frequencies and exchangeability rates #
+	# are drawn from uniform Dirichlet distributions #
+	
+	# First the stationary frequencies #
+	sf_hp <- v(1,1,1,1)
+	sf ~ dnDirichlet(sf_hp)
+	
+	# Then the exchangeability rates #
+	er_hp <- v(1,1,1,1,1,1)
+	er ~ dnDirichlet(er_hp)
+	
+	# Create the matrix #
+	Q := fnGTR(er,sf)
+	
+	# +I
+	p_inv ~ dnBeta(1,1)
+	
+	# +G
+	alpha ~ dnExponential(1.0)
+	# Discretize Gamma into 4 categories
+	site_rates := fnDiscretizeGamma(alpha, alpha, 4)
+	
+	seq_dist ~ dnPhyloCTMC(tree=extant_only_tree, Q=Q, pInv=p_inv, siteRates=site_rates, type="DNA", nSites=1000)
+	seq_dist.redraw()
+	
+	filename = "output" + a + "/sim/simulated_data.nex"
+	writeNexus(filename=filename, seq_dist)
+	
+	# 5. Extract and Save Fossil Ages to a TSV file
+	# Initialize a string with a header
+	fossil_data = "taxon" + "\t" + "min_age" + "\t" + "max_age" + "\n"
+	
+	# 'fbd_tree' is the simulated tree
+	for (i in 1:fbd_tree.ntips()) {
+		# Get taxon name and its age (distance from present)
+		t_name = fbd_tree.nodeName(i)
+		t_age  = fbd_tree.nodeAge(i)
+		min = 0.0
+		max = 0.0
+		if (t_age > 0.0) {
+			min = t_age - 0.01
+			max = t_age + 0.01
+		}
+		
+		fossil_data += t_name + "\t" + min + "\t" + max + "\n"
+	}
+	
+filename = "output" + a + "/sim/fossils.tsv"
+print(filename)
+write(fossil_data, filename=filename, append=FALSE)
+}
