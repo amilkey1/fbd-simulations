@@ -64,6 +64,7 @@ mymcmc = mcmc(mymodel, monitors, moves)
 
 # Run the MCMC #
 mymcmc.run(generations=100000)
+mymcmc.burnin(generations=10000,tuningInterval=100)
 
 # Quit RevBayes #
 q()

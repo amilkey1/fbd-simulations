@@ -1,15 +1,15 @@
 # simulate
-rb-new revbayes-sim.Rev
+rb132 revbayes-sim.Rev
 
 # copy sampling scripts into directories
-for d in */; do
+for d in output*/; do
 	cp -r "sample" "$d"
 done
 
 # start runs
-for d in */; do
-	cd "$d"
-	cd sample
-        rb-new mcmc_CEFBDP_Specimens.Rev
-	cd ../..
-done
+#for d in */; do
+#	cd "$d"
+#	cd sample
+#       rb-new mcmc_CEFBDP_Specimens.Rev
+#	cd ../..
+#done
