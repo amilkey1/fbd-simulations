@@ -12,7 +12,7 @@
 # Reading in the Data #
 #######################
 # Create the full list of taxa (including all fossils and extant species #
-taxa <- readTaxonData("../sim/fossils.tsv")
+taxa <- readTaxonData("../sim/no-fossils.tsv")
 
 # Import the molecular sequences #
 # this file contains only the taxa for which sequence data are available #
@@ -63,8 +63,8 @@ monitors.append( mnScreen(printgen=100, age_extant_mrca, num_samp_anc, origin_ti
 mymcmc = mcmc(mymodel, monitors, moves)
 
 # Run the MCMC #
-mymcmc.run(generations=300000)
 mymcmc.burnin(generations=30000,tuningInterval=100)
+mymcmc.run(generations=300000)
 
 # Quit RevBayes #
 q()

@@ -59,8 +59,7 @@ for (i in 1:taxa.size()) {
 
 extant_clade = clade(extant_names)
 
-constraints = v(extant_clade)
-fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=constraints)
+fbd_tree ~ dnConstrainedTopology(fbd_dist)
 
 # Specify moves on the tree and node times #
 # These moves update the tree topology 
