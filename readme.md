@@ -10,3 +10,5 @@ To run simulations:
 
 
 `Rscript summarize.R` (summarize output - number of fossils and width of hpd intervals)
+
+`summary.Rmd` contains template file for visualizing results
