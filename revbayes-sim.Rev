@@ -1,7 +1,7 @@
 # set random number seed
 seed(123)
 
-nreps = 15
+nreps = 100
 for (a in 1:nreps) {
 	# clear vectors
 	if (a > 1) {

@@ -1,7 +1,8 @@
 library(coda)
-run_numbers <- 1:15
+run_numbers <- 1:10
 info <- c()
 all_fossils <- c()
+all_extant <- c()
 
 for (i in run_numbers) {
 	# path to log file
@@ -28,9 +29,13 @@ for (i in run_numbers) {
 	fossil_path <- paste0("output", i, "/sim/fossils.tsv")
 	fossils <- read.table(fossil_path, header=TRUE)
 	n_fossils <- length(grep("Fossil", fossils$taxon))
+
+	n_extant <- length(grep("Taxon", fossils$taxon))
 	
 	all_fossils <- append(all_fossils, n_fossils)
+	all_extant <- append(all_extant, n_extant)
 }
 
 paste(all_fossils, collapse = ",")
+paste(all_extant, collapse= ",")
 paste(info, collapse = ",")
