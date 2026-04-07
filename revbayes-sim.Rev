@@ -12,7 +12,7 @@ for (a in 1:nreps) {
 	mu ~ dnExponential(10)
 	psi ~ dnUniform(0.001, 1.0)
 	rho ~ dnUniform(0.001, 1.0)
-	origin_time <- 25.0
+	origin_time <- 5.0
 	
 	lambda.redraw()
 	mu.redraw()
