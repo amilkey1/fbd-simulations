@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --array=11-15%5
+#SBATCH --array=1-15%15
 
 #SBATCH --job-name=rb
 #SBATCH -o rb-%a.out
