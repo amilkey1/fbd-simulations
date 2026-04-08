@@ -1,0 +1,81 @@
+seed(123)
+
+nreps = 10
+for (a in 1:nreps) {
+
+	path = "rep" + a + "/fbd.tre"
+	fbd_tree <- readTrees(path)[1]
+	taxa <- fbd_tree.taxa()
+
+	e = 0
+	f = 0
+
+	for (i in 1:taxa.size()) {
+		if (taxa[i].getAge() == 0.0) {
+			e = e + 1
+			extant_taxa[e] = taxa[i]
+		} else {
+			f = f + 1
+			fossil_taxa[f] = taxa[i]
+		}
+	}
+
+	# save taxon ages to file
+	fossil_data = "taxon" + "\t" + "min_age" + "\t" + "max_age" + "\n"
+
+	for (i in 1:taxa.size()) {
+		t_name = taxa[i].getName();
+		t_age = taxa[i].getAge();
+		min = 0.0;
+		max = 0.0;
+
+		if (t_age > 0.0) {
+			min = t_age - 0.001
+			max = t_age + 0.001
+		}
+		
+		fossil_data += t_name + "\t" + min + "\t" + max + "\n"
+	}
+
+	filename = "rep" + a + "/sim/fossils.tsv"
+	write(fossil_data, filename=filename, append=FALSE)
+
+	# simulate sequence data
+	# prune fossil taxa
+	extant_only_tree := fnPruneTree(fbd_tree, prune=fossil_taxa)
+
+		# simulate sequence data for extant taxa
+	#####################################
+	# GTR+I+G nucleotide substitution model #
+	#####################################
+	
+	# Initialize the parameters of substitution matrix #
+	# Both the stationary frequencies and exchangeability rates #
+	# are drawn from uniform Dirichlet distributions #
+	
+	# First the stationary frequencies #
+	sf_hp <- v(1,1,1,1)
+	sf ~ dnDirichlet(sf_hp)
+	
+	# Then the exchangeability rates #
+	er_hp <- v(1,1,1,1,1,1)
+	er ~ dnDirichlet(er_hp)
+	
+	# Create the matrix #
+	Q := fnGTR(er,sf)
+	
+	# +I
+	p_inv ~ dnBeta(1,1)
+	
+	# +G
+	alpha ~ dnExponential(1.0)
+	# Discretize Gamma into 4 categories
+	site_rates := fnDiscretizeGamma(alpha, alpha, 4)
+	
+	seq_dist ~ dnPhyloCTMC(tree=extant_only_tree, Q=Q, pInv=p_inv, siteRates=site_rates, type="DNA", nSites=1000)
+	seq_dist.redraw()
+	
+	filename = "rep" + a + "/sim/simulated_data.nex"
+	writeNexus(filename=filename, seq_dist)
+
+}

@@ -1,0 +1,15 @@
+```{r}
+library(ggplot2)
+
+nfossils <- c()
+nextant <- c()
+info <- c()
+
+data <- data.frame(nfossils, nextant, info)
+
+ggplot(data = data, aes(x = nfossils, y = info)) + 
+  geom_point(size=5)
+
+ggplot(data = data, aes(x = nfossils/nextant, y = info)) + 
+  geom_point(size=5)
+```

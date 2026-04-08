@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --array=1-100%100
+#SBATCH --array=1-10%10
 
 #SBATCH --job-name=rb
 #SBATCH -o rb-%a.out
@@ -14,5 +14,5 @@
 
 LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/lib"
 export TIMEFORMAT="user-seconds %3U"
-cd output${SLURM_ARRAY_TASK_ID}/sample
+cd rep${SLURM_ARRAY_TASK_ID}/sample
 rb132 mcmc_CEFBDP_Specimens.Rev

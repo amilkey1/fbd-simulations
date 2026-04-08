@@ -5,7 +5,7 @@
 
 # Define exponential priors on the birth rate and death rate #
 speciation_rate ~ dnExponential(1)
-extinction_rate ~ dnExponential(10)
+extinction_rate ~ dnExponential(1)
 
 # Specify a scale move on the speciation_rate parameter #
 # This move will be applied with 3 different tuning values (lambda) to help improve mixing # 
@@ -37,7 +37,7 @@ moves.append( mvScale(psi, lambda=1,    weight=1) )
 
 # The FBD is conditioned on a starting time for the process, which is the origin time #
 # Specify a uniform prior on the origin #
-origin_time ~ dnUniform(25.0, 100.0)
+origin_time ~ dnUniform(5.0, 100.0)
 
 # Specify a sliding-window move on the origin_time parameter #
 # This move will be applied with 3 different window widths (delta) to help improve mixing # 
