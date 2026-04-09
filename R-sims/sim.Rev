@@ -26,18 +26,33 @@ for (a in 1:nreps) {
 	for (i in 1:taxa.size()) {
 		t_name = taxa[i].getName();
 		t_age = taxa[i].getAge();
+
 		min = 0.0;
 		max = 0.0;
 
+		has_dot <- FALSE
+		is_extant <- TRUE
+
 		if (t_age > 0.0) {
-			min = t_age - 0.001
-			if (min < 0.0) {
-				min = 0.0001
+			# fossils will have "." in their name
+			has_dot <- FALSE
+			is_extant <- TRUE
+			if (t_name.find(".") > 0 ) {
+				has_dot <- TRUE
 			}
-			max = t_age + 0.001
-		}
 		
-		fossil_data += t_name + "\t" + min + "\t" + max + "\n"
+			if (has_dot) {	
+				min = t_age - 0.001
+				if (min < 0.0) {
+					min = 0.0001
+				}
+				max = t_age + 0.001
+				fossil_data += t_name + "\t" + min + "\t" + max + "\n"
+			}
+		} else {
+			fossil_data += t_name + "\t" + min + "\t" + max + "\n"
+		}
+
 	}
 
 	filename = "rep" + a + "/sim/fossils.tsv"

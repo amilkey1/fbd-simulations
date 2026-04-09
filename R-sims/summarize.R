@@ -1,5 +1,5 @@
 library(coda)
-run_numbers <- 1:6
+run_numbers <- 1:15
 info <- c()
 all_fossils <- c()
 all_extant <- c()
