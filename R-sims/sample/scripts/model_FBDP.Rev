@@ -80,15 +80,17 @@ moves.append( mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
 # Use a for loop to create a uniform distribution on the occurence time for each fossil #
 # The boundaries of the uniform distribution are specified in the tsv file #
 fossils = fbd_tree.getFossils()
-for(i in 1:fossils.size())
-{
-    t[i] := tmrca(fbd_tree, clade(fossils[i]))
+if (fossils.size() > 0) {
+	for(i in 1:fossils.size())
+	{
+    	t[i] := tmrca(fbd_tree, clade(fossils[i]))
 
-    a_i = fossils[i].getMinAge()
-    b_i = fossils[i].getMaxAge()
+    	a_i = fossils[i].getMinAge()
+    	b_i = fossils[i].getMaxAge()
 
-    F[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
-    F[i].clamp( 0 )
+    	F[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
+    	F[i].clamp( 0 )
+	}
 }
 
 # Add a move to sample the fossil times #
