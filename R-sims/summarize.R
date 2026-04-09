@@ -1,5 +1,5 @@
 library(coda)
-run_numbers <- 1:11
+run_numbers <- 1:6
 info <- c()
 all_fossils <- c()
 all_extant <- c()
@@ -29,8 +29,8 @@ for (i in run_numbers) {
 	fossil_path <- paste0("rep", i, "/sim/fossils.tsv")
 	fossils <- read.table(fossil_path, header=TRUE)
 	
-	n_fossils <- sum(fossils$min_age == 0.0)
-	n_extant <- sum(fossils$min_age != 0.0)
+	n_fossils <- sum(fossils$min_age != 0.0)
+	n_extant <- sum(fossils$min_age == 0.0)
 	
 	all_fossils <- append(all_fossils, n_fossils)
 	all_extant <- append(all_extant, n_extant)
