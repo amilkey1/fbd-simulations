@@ -24,7 +24,8 @@ diversification := speciation_rate - extinction_rate
 turnover := extinction_rate/speciation_rate
 
 # sampling parameter (rho)
-rho ~ dnUniform(0.1, 1.0)
+#rho ~ dnUniform(0.1, 1.0)
+rho <- 1.0
 
 # rate of sampling fossils (psi) #
 psi ~ dnUniform(0.1, 1.0)
