@@ -5,9 +5,9 @@
 # get oldest taxon age
 max_fossil_age <- 0.0
 
-for (i in 1:taxa.size()) {
-    if (taxa[i].getMinAge() > max_fossil_age) {
-        max_fossil_age := taxa[i].getMinAge()
+for (i in 1:full_taxon_list.size()) {
+    if (full_taxon_list[i].getMinAge() > max_fossil_age) {
+        max_fossil_age := full_taxon_list[i].getMinAge()
     }
 }
 

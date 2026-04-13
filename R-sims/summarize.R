@@ -48,7 +48,7 @@ for (i in run_numbers) {
 
 	for (a in 1:num_fossil_files) {
 	  partial_fossil_log_path <- paste0("rep", i, "/fossil_", a, "/output/sim.log")
-	  percent_fossils_included <- ((n_fossils - a) / (num_fossil_files + 1)) * 100
+	  percent_fossils_included <- ((n_fossils - a) / (n_fossils)) * 100
 	  temp_percent <- append(temp_percent, percent_fossils_included)
 
 	  # read in partial fossil trace

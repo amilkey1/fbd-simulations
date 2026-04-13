@@ -13,6 +13,7 @@
 #######################
 # Create the full list of taxa (including all fossils and extant species #
 taxa <- readTaxonData("../sim/fossils.tsv")
+full_taxon_list <- readTaxonData("../sim/fossils.tsv")
 
 # Import the molecular sequences #
 # this file contains only the taxa for which sequence data are available #
