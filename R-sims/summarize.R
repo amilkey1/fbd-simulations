@@ -3,9 +3,12 @@ run_numbers <- 1:15
 info <- c()
 all_fossils <- c()
 all_extant <- c()
+all_fossils_mean <- c()
+no_fossils_mean <- c()
 
 partial_fossil_percentage <- c() # percentage of fossils included in the analysis
 partial_fossil_info <- c() # information for analyses with in between 0 and 100% of the fossils
+partial_fossil_mean <- c()
 
 for (i in run_numbers) {
 	# path to log file
@@ -43,8 +46,15 @@ for (i in run_numbers) {
 	all_fossils <- append(all_fossils, n_fossils)
 	all_extant <- append(all_extant, n_extant)
 	
+	fossil_mean <- mean(mcmc_chain_fossil[,3])
+	all_fossils_mean <- append(all_fossils_mean, fossil_mean)
+
+        no_fossil_mean <- mean(mcmc_chain_no_fossil[,3])
+        no_fossils_mean <- append(no_fossils_mean, no_fossil_mean)
+
 	temp_percent <- c()
 	temp_info <- c()
+	temp_mean <- c()
 
 	for (a in 1:num_fossil_files) {
 	  partial_fossil_log_path <- paste0("rep", i, "/fossil_", a, "/output/sim.log")
@@ -62,16 +72,36 @@ for (i in run_numbers) {
 
 	  partial_rep_info <- (hpd_no_fossil - partial_hpd_fossil) / (hpd_no_fossil)
 	  temp_info <- append(temp_info, partial_rep_info*100)
+
+	partial_rep_mean <- mean(mcmc_chain_partial_fossils[,3])
+	temp_mean <- append(temp_mean, partial_rep_mean)
 	}
 	
 	partial_fossil_percentage[[i]] <- temp_percent
 	partial_fossil_info[[i]] <- temp_info
+	partial_fossil_mean[[i]] <- temp_mean
 }
 
+cat("number of fossils\n")
 paste(all_fossils, collapse = ",")
+
+cat("number of taxa\n")
 paste(all_extant, collapse= ",")
+
+cat("information\n")
 paste(info, collapse = ",")
 
+cat("mean no fossils\n")
+paste(no_fossils_mean, collapse = ",")
+
+cat("mean all fossils\n")
+paste(all_fossils_mean, collapse = ",")
+
+cat("partial fossil percentages\n")
 dput(partial_fossil_percentage)
+
+cat("partial fossil information\n")
 dput(partial_fossil_info)
 
+cat("partial fossil mean\n")
+dput(partial_fossil_mean)
