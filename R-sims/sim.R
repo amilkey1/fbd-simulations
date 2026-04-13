@@ -3,7 +3,7 @@ library(ape)
 
 set.seed(1)
 
-for (i in 1:2) {
+for (i in 1:15) {
 	dirname = paste("rep", i, sep="")
 	setwd(dirname)
 	print(dirname)

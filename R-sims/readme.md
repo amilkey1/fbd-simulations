@@ -2,8 +2,6 @@ To run simulations:
 
 `. setup.sh` (simulates data and creates sample scripts)
 
-`sbatch rb.slurm` (run RevBayes)
-
 `sbatch rb-no-fossils.slurm` (run RevBayes without fossil data)
 
 `sbatch rb-all-fossils.slurm` (run RevBayes with all fossil data)

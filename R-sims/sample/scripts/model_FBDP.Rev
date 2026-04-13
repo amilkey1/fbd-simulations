@@ -2,6 +2,14 @@
 # Joint Fossilized Birth-Death Process prior on the topology and fossil occurrence times #
 ##########################################################################################
 
+# get oldest taxon age
+max_fossil_age <- 0.0
+
+for (i in 1:taxa.size()) {
+    if (taxa[i].getMinAge() > max_fossil_age) {
+        max_fossil_age := taxa[i].getMinAge()
+    }
+}
 
 # Define exponential priors on the birth rate and death rate #
 speciation_rate ~ dnExponential(1)
@@ -38,7 +46,7 @@ moves.append( mvScale(psi, lambda=1,    weight=1) )
 
 # The FBD is conditioned on a starting time for the process, which is the origin time #
 # Specify a uniform prior on the origin #
-origin_time ~ dnUniform(1.0, 100.0)
+origin_time ~ dnUniform(max_fossil_age + 0.01, max_fossil_age + 100.0)
 
 # Specify a sliding-window move on the origin_time parameter #
 # This move will be applied with 3 different window widths (delta) to help improve mixing # 
