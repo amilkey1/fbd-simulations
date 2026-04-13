@@ -5,14 +5,14 @@
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --array=1-50%50
+#SBATCH --array=1
 
-#SBATCH --job-name=rbnofossil
-#SBATCH -o rbnofossil-%a.out
-#SBATCH -e rbnofossil-%a.err
+#SBATCH --job-name=rballfossil
+#SBATCH -o rballfossil-%a.out
+#SBATCH -e rballfossil-%a.err
 #SBATCH --mem=20G
 
 LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/lib"
 export TIMEFORMAT="user-seconds %3U"
-cd rep${SLURM_ARRAY_TASK_ID}/sample-no-fossils
+cd rep${SLURM_ARRAY_TASK_ID}/sample
 rb132 mcmc_CEFBDP_Specimens.Rev

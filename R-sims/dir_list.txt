@@ -1,0 +1,17 @@
+rep1/fossil_1
+rep1/fossil_2
+rep1/fossil_3
+rep1/fossil_6
+rep1/fossil_4
+rep1/fossil_5
+rep2/fossil_9
+rep2/fossil_3
+rep2/fossil_6
+rep2/fossil_8
+rep2/fossil_2
+rep2/fossil_4
+rep2/fossil_1
+rep2/fossil_10
+rep2/fossil_7
+rep2/fossil_11
+rep2/fossil_5

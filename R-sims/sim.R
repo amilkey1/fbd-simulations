@@ -3,7 +3,7 @@ library(ape)
 
 set.seed(1)
 
-for (i in 1:15) {
+for (i in 1:2) {
 	dirname = paste("rep", i, sep="")
 	setwd(dirname)
 	print(dirname)
@@ -17,7 +17,7 @@ for (i in 1:15) {
 	rho <- 1.0
 	tMax <- 5.0
 
-	sim <- bd.sim(n0 = 1, lambda = lambda, mu = mu, tMax = tMax, nExtant = c(10, 10))
+	sim <- bd.sim(n0 = 1, lambda = lambda, mu = mu, tMax = tMax, nExtant = c(5, 5))
 	phy <- make.phylo(sim)
 	fossils <- sample.clade(sim, rho, tMax)
 

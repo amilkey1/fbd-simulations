@@ -1,6 +1,6 @@
 seed(123)
 
-nreps = 15
+nreps = 2
 for (a in 1:nreps) {
 
 	path = "rep" + a + "/fbd.tre"

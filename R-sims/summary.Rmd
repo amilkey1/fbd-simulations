@@ -5,11 +5,17 @@ nfossils <- c()
 nextant <- c()
 info <- c()
 
-data <- data.frame(nfossils, nextant, info)
+partial_fossil_percentage <- c()
+partial_fossil_info <- c()
+
+data <- data.frame(nfossils, nextant, info, partial_fossil_percentage, partial_fossil_info)
 
 ggplot(data = data, aes(x = nfossils, y = info)) + 
   geom_point(size=5)
 
 ggplot(data = data, aes(x = nfossils/nextant, y = info)) + 
+  geom_point(size=5)
+
+ggplot(data=data, aes(x = partial_fossil_percentage, y = partial_fossil_info)) +
   geom_point(size=5)
 ```
