@@ -1,10 +1,15 @@
 library(coda)
+library(phytools)
+library(ape)
+
 run_numbers <- 1:15
 info <- c()
 all_fossils <- c()
 all_extant <- c()
 all_fossils_mean <- c()
 no_fossils_mean <- c()
+
+true_heights <- c()
 
 partial_fossil_percentage <- c() # percentage of fossils included in the analysis
 partial_fossil_info <- c() # information for analyses with in between 0 and 100% of the fossils
@@ -56,6 +61,17 @@ for (i in run_numbers) {
 	temp_info <- c()
 	temp_mean <- c()
 
+	# get true height of crown age
+	tree_file = paste0("rep", i, "/fbd.tre")
+	tree <- read.tree(tree_file)
+	extant_tips <- getExtant(tree)
+	mrca_node <- findMRCA(tree, tips = extant_tips)
+	crown_height <- nodeheight(tree, mrca_node)
+	tree_depth <- max(nodeHeights(tree))
+	crown_age <- tree_depth - crown_height
+	
+	true_heights <- append(true_heights, crown_age)	
+
 	for (a in 1:num_fossil_files) {
 	  partial_fossil_log_path <- paste0("rep", i, "/fossil_", a, "/output/sim.log")
 	  percent_fossils_included <- ((n_fossils - a) / (n_fossils)) * 100
@@ -96,6 +112,9 @@ paste(no_fossils_mean, collapse = ",")
 
 cat("mean all fossils\n")
 paste(all_fossils_mean, collapse = ",")
+
+cat("true crown group heights\n")
+paste(true_heights, collapse = ",")
 
 cat("partial fossil percentages\n")
 dput(partial_fossil_percentage)

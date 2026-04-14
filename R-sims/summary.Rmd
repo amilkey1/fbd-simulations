@@ -2,36 +2,93 @@
 library(ggplot2)
 
 nfossils <- c()
+
 nextant <- c()
+
 info <- c()
 
-partial_fossil_percentage <- c()
-partial_fossil_info <- c()
+no_fossil_mean <- c()
 
-data <- data.frame(nfossils, nextant, info)
+fossil_mean <- c()
 
-ggplot(data = data, aes(x = nfossils, y = info)) + 
-  geom_point(size=5) +
-    geom_smooth(method = "lm") +
-  stat_cor(aes(label = ..rr.label..), label.x = 1, label.y = 20) +
-   stat_regline_equation(label.x = 10, label.y = 20)
+true_heights <- c()
 
-ggplot(data = data, aes(x = nfossils/nextant, y = info)) + 
+partial_fossil_percentage <-
+
+partial_fossil_info <- 
+
+partial_fossil_mean <-
+
+accuracy_fossils <- fossil_mean - true_heights
+accuracy_no_fossils <- no_fossil_mean - true_heights
+
+data <- data.frame(nfossils, nextant, info, fossil_mean, no_fossil_mean, true_heights)
+
+ggplot(data = data, aes(x = nfossils, y = info)) +
   geom_point(size=5) +
   geom_smooth(method = "lm") +
   stat_cor(aes(label = ..rr.label..), label.x = 1, label.y = 20) +
    stat_regline_equation(label.x = 10, label.y = 20)
 
+ggplot(data = data, aes(x = fossil_mean, y = info)) +
+  geom_point(size=5) +
+  geom_smooth(method = "lm") +
+  stat_cor(aes(label = ..rr.label..), label.x = 2, label.y = 20) +
+   stat_regline_equation(label.x = 2, label.y = 2)
+
+ggplot(data = data, aes(x = nfossils, y = accuracy_fossils)) +
+  geom_point(size=5) +
+  geom_smooth(method = "lm") +
+  stat_cor(aes(label = ..rr.label..), label.x = 2, label.y = 20) +
+   stat_regline_equation(label.x = 2, label.y = 2)
+
+mean(fossil_mean - true_heights)
+mean(no_fossil_mean - true_heights)
+
+ggplot(data = data, aes(x = fossil_mean, y = no_fossil_mean)) +
+  geom_point(size=5) +
+  geom_smooth(method = "lm") +
+  stat_cor(aes(label = ..rr.label..), label.x = 2, label.y = 20) +
+   stat_regline_equation(label.x = 2, label.y = 2)
 
 # Flatten into a data frame
 df <- data.frame(
   partial_fossil_percentage = unlist(partial_fossil_percentage),
   partial_fossil_info = unlist(partial_fossil_info),
+  partial_fossil_mean = unlist(partial_fossil_mean),
   # Create a group ID based on which sub-vector the data came from
   group = rep(seq_along(partial_fossil_percentage), sapply(partial_fossil_info, length))
 )
 
 ggplot(data=df, aes(x = partial_fossil_percentage, y = partial_fossil_info, color = factor(group))) +
   geom_point(size=5) +
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm") +
+  xlab("percentage of fossils included in analysis") +
+  ylab("information content")
+
+ggplot(data=df, aes(x = partial_fossil_percentage, y = partial_fossil_mean, color = factor(group))) +
+  geom_point(size=5) +
+  geom_smooth(method = "lm") +
+  xlab("percentage of fossils included in analysis") +
+  ylab("mean")
+
+# get accuracy of each partial fossil rep
+partial_fossil_accuracy <- lapply(seq_along(partial_fossil_mean), function(i) {
+  true_heights[i] - partial_fossil_mean[[i]]
+})
+
+# Flatten into a data frame
+df <- data.frame(
+  partial_fossil_percentage = unlist(partial_fossil_percentage),
+  partial_fossil_info = unlist(partial_fossil_info),
+  partial_fossil_accuracy = unlist(partial_fossil_accuracy),
+  # Create a group ID based on which sub-vector the data came from
+  group = rep(seq_along(partial_fossil_percentage), sapply(partial_fossil_info, length))
+)
+
+ggplot(data=df, aes(x = partial_fossil_percentage, y = partial_fossil_accuracy, color = factor(group))) +
+  geom_point(size=5) +
+  geom_smooth(method = "lm") +
+  xlab("percentage of fossils included in analysis") +
+  ylab("distance from truth")
 ```
