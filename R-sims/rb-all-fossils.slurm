@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --array=1-15%15
+#SBATCH --array=1-25%25
 
 #SBATCH --job-name=rballfossil
 #SBATCH -o rballfossil-%a.out

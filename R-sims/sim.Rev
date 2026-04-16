@@ -1,14 +1,18 @@
 seed(123)
 
-nreps = 15
+nreps = 25
 for (a in 1:nreps) {
-
 	path = "rep" + a + "/fbd.tre"
+	path
 	fbd_tree <- readTrees(path)[1]
 	taxa <- fbd_tree.taxa()
 
 	e = 0
 	f = 0
+	
+	if (a > 1) {
+		clear(fossil_taxa)
+	}
 
 	for (i in 1:taxa.size()) {
 		if (taxa[i].getAge() == 0.0) {

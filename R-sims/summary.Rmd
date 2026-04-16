@@ -54,23 +54,11 @@ ggplot(data = data, aes(x = fossil_mean, y = no_fossil_mean)) +
 # Flatten into a data frame
 df <- data.frame(
   partial_fossil_percentage = unlist(partial_fossil_percentage),
-  partial_fossil_info = unlist(partial_fossil_info),
+  #partial_fossil_info = unlist(partial_fossil_info),
   partial_fossil_mean = unlist(partial_fossil_mean),
   # Create a group ID based on which sub-vector the data came from
-  group = rep(seq_along(partial_fossil_percentage), sapply(partial_fossil_info, length))
+  group = rep(seq_along(partial_fossil_percentage), sapply(partial_fossil_mean, length))
 )
-
-ggplot(data=df, aes(x = partial_fossil_percentage, y = partial_fossil_info, color = factor(group))) +
-  geom_point(size=5) +
-  geom_smooth(method = "lm") +
-  xlab("percentage of fossils included in analysis") +
-  ylab("information content")
-
-ggplot(data=df, aes(x = partial_fossil_percentage, y = partial_fossil_mean, color = factor(group))) +
-  geom_point(size=5) +
-  geom_smooth(method = "lm") +
-  xlab("percentage of fossils included in analysis") +
-  ylab("mean")
 
 # get accuracy of each partial fossil rep
 partial_fossil_accuracy <- lapply(seq_along(partial_fossil_mean), function(i) {
@@ -80,15 +68,56 @@ partial_fossil_accuracy <- lapply(seq_along(partial_fossil_mean), function(i) {
 # Flatten into a data frame
 df <- data.frame(
   partial_fossil_percentage = unlist(partial_fossil_percentage),
-  partial_fossil_info = unlist(partial_fossil_info),
   partial_fossil_accuracy = unlist(partial_fossil_accuracy),
   # Create a group ID based on which sub-vector the data came from
-  group = rep(seq_along(partial_fossil_percentage), sapply(partial_fossil_info, length))
+  group = rep(seq_along(partial_fossil_percentage), sapply(partial_fossil_accuracy, length))
+)
+
+partial_fossil_percentage_no_zero <- lapply(partial_fossil_percentage, function(x) x[-1])
+partial_fossil_accuracy_no_zero <- lapply(partial_fossil_accuracy, function(x) x[-1])
+
+# Flatten into a data frame
+df <- data.frame(
+  partial_fossil_percentage = unlist(partial_fossil_percentage),
+    #partial_fossil_info = unlist(partial_fossil_info),
+  partial_fossil_accuracy = unlist(partial_fossil_accuracy),
+  # Create a group ID based on which sub-vector the data came from
+  group = rep(seq_along(partial_fossil_percentage), sapply(partial_fossil_accuracy, length))
+)
+
+# Flatten into a data frame
+df2 <- data.frame(
+  partial_fossil_percentage_no_zero = unlist(partial_fossil_percentage_no_zero),
+  partial_fossil_accuracy_no_zero = unlist(partial_fossil_accuracy_no_zero),
+  # Create a group ID based on which sub-vector the data came from
+  group = rep(seq_along(partial_fossil_percentage_no_zero), sapply(partial_fossil_accuracy_no_zero, length))
 )
 
 ggplot(data=df, aes(x = partial_fossil_percentage, y = partial_fossil_accuracy, color = factor(group))) +
   geom_point(size=5) +
-  geom_smooth(method = "lm") +
+  geom_smooth(method = "lm", alpha=0.1) +
   xlab("percentage of fossils included in analysis") +
-  ylab("distance from truth")
+  ylab("sampled mean crown age minus true crown age")+
+  stat_regline_equation(aes(label = ..eq.label..))
+
+ggplot(data=df2, aes(x = partial_fossil_percentage_no_zero, y = partial_fossil_accuracy_no_zero, color = factor(group))) +
+  geom_point(size=5) +
+  geom_smooth(method = "lm", alpha=0.1) +
+  xlab("percentage of fossils included in analysis") +
+  ylab("sampled mean crown age minus true crown age")+
+  stat_regline_equation(aes(label = ..eq.label..))
+
+library(dplyr)
+
+slopes_df <- df2 %>%
+  group_by(group) %>%
+  reframe(slope = coef(lm(partial_fossil_accuracy_no_zero ~ partial_fossil_percentage_no_zero))[2]) # [2] selects the x coefficient (slope)
+
+slopes_and_fossils <- data.frame(nfossils, slopes_df)
+
+ggplot(data=slopes_and_fossils, aes(x=nfossils, y=slope)) +
+  geom_point(size=5) +
+  geom_smooth(method = "lm") +
+  stat_cor(aes(label = ..rr.label..), label.x = 2, label.y = 0.06) +
+   stat_regline_equation(label.x = 2, label.y = 0.07)
 ```

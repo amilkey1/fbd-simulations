@@ -1,4 +1,4 @@
-for i in {1..15}; do
+for i in {1..25}; do
 	mkdir "rep$i"
 	mkdir "rep$i/sim"
 done
