@@ -14,9 +14,9 @@ for (i in 1:25) {
 #	mu <- rexp(n = 1, rate = 1)
 	psi <- runif(1, min = 0.1, max = 1.0)
 
-#	rho <- 1.0
+	rho <- 1.0
 # to force fossils sampled only towards the present:
-	rho = function(t) { ifelse(t > 3, 1, 0) }
+	# rho = function(t) { ifelse(t > 3, 1, 0) }
 
 	tMax <- 5.0
 
