@@ -97,14 +97,14 @@ ggplot(data=df, aes(x = partial_fossil_percentage, y = partial_fossil_accuracy, 
   geom_point(size=5) +
   geom_smooth(method = "lm", alpha=0.1) +
   xlab("percentage of fossils included in analysis") +
-  ylab("sampled mean crown age minus true crown age")+
+  ylab("true crown age minus sampled mean crown age")+
   stat_regline_equation(aes(label = ..eq.label..))
 
 ggplot(data=df2, aes(x = partial_fossil_percentage_no_zero, y = partial_fossil_accuracy_no_zero, color = factor(group))) +
   geom_point(size=5) +
   geom_smooth(method = "lm", alpha=0.1) +
   xlab("percentage of fossils included in analysis") +
-  ylab("sampled mean crown age minus true crown age")+
+  ylab("true crown age minus sampled mean crown age")+
   stat_regline_equation(aes(label = ..eq.label..))
 
 library(dplyr)
