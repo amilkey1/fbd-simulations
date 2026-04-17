@@ -87,14 +87,19 @@ for (a in 1:nreps) {
 	Q := fnGTR(er,sf)
 	
 	# +I
-	p_inv ~ dnBeta(1,1)
+#	p_inv ~ dnBeta(1,1)
 	
 	# +G
-	alpha ~ dnExponential(1.0)
+	alpha ~ dnExponential(0.00001)
 	# Discretize Gamma into 4 categories
 	site_rates := fnDiscretizeGamma(alpha, alpha, 4)
-	
-	seq_dist ~ dnPhyloCTMC(tree=extant_only_tree, Q=Q, pInv=p_inv, siteRates=site_rates, type="DNA", nSites=1000)
+
+	# clock rate
+	branch_rates_mean ~ dnExponential(10.0)
+
+#	scaled_tree := treeScaleBranchLengths(extant_only_tree, branch_rates_mean)
+
+	seq_dist ~ dnPhyloCTMC(extant_only_tree, Q=Q, pInv=0, siteRates=site_rates, type="DNA", nSites=1000, branchRates=branch_rates_mean)
 	seq_dist.redraw()
 	
 	filename = "rep" + a + "/sim/simulated_data.nex"
