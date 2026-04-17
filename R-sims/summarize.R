@@ -74,25 +74,27 @@ for (i in run_numbers) {
 	temp_percent <- append(temp_percent, 0.0)
 	temp_mean <- append(temp_mean, no_fossil_mean)
 
-	for (a in 1:num_fossil_files) {
-	  partial_fossil_log_path <- paste0("rep", i, "/fossil_", a, "/output/sim.log")
-	  percent_fossils_included <- ((n_fossils - a) / (n_fossils)) * 100
-	  temp_percent <- append(temp_percent, percent_fossils_included)
+	if (num_fossil_files > 0) {
+		for (a in 1:num_fossil_files) {
+			partial_fossil_log_path <- paste0("rep", i, "/fossil_", a, "/output/sim.log")
+			percent_fossils_included <- ((n_fossils - a) / (n_fossils)) * 100
+			temp_percent <- append(temp_percent, percent_fossils_included)
 
-	  # read in partial fossil trace
-	  trace_partial_fossils <- read.table(partial_fossil_log_path, header=TRUE)
-	  # convert to mcmc object
-	  mcmc_chain_partial_fossils <- as.mcmc(trace_partial_fossils[, c("Posterior", "Likelihood", "age_extant_mrca")])
+			# read in partial fossil trace
+			trace_partial_fossils <- read.table(partial_fossil_log_path, header=TRUE)
+			# convert to mcmc object
+			mcmc_chain_partial_fossils <- as.mcmc(trace_partial_fossils[, c("Posterior", "Likelihood", "age_extant_mrca")])
 
-	  # calculate 95% hpd interval with partial fossils
-	  partial_interval_fossil <- HPDinterval(mcmc_chain_partial_fossils)
-	  partial_hpd_fossil <- partial_interval_fossil[6] - partial_interval_fossil[3]
+			# calculate 95% hpd interval with partial fossils
+			partial_interval_fossil <- HPDinterval(mcmc_chain_partial_fossils)
+			partial_hpd_fossil <- partial_interval_fossil[6] - partial_interval_fossil[3]
 
-	partial_rep_info <- (hpd_no_fossil - partial_hpd_fossil) / (hpd_no_fossil)
-	temp_info <- append(temp_info, partial_rep_info*100)
+			partial_rep_info <- (hpd_no_fossil - partial_hpd_fossil) / (hpd_no_fossil)
+			temp_info <- append(temp_info, partial_rep_info*100)
 
-	partial_rep_mean <- mean(mcmc_chain_partial_fossils[,3])
-	temp_mean <- append(temp_mean, partial_rep_mean)
+			partial_rep_mean <- mean(mcmc_chain_partial_fossils[,3])
+			temp_mean <- append(temp_mean, partial_rep_mean)
+		}
 	}
 
 	temp_info <- append(temp_info, info)
